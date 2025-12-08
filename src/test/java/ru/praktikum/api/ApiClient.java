@@ -4,10 +4,14 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+
 import ru.praktikum.apimodels.User;
+import ru.praktikum.apimodels.CreateAdRequest;
+
 import static io.restassured.RestAssured.given;
 
 public class ApiClient {
+
     private static final String BASE_URL = "https://qa-desk.stand.praktikum-services.ru/";
 
     protected RequestSpecification getSpec() {
@@ -34,15 +38,12 @@ public class ApiClient {
     }
 
     public Response createAd(String token, String title) {
-        String body = String.format(
-                "{\"title\":\"%s\",\"description\":\"Описание\",\"price\":100,\"category\":\"6566082212685081264426b3\"}",
-                title
-        );
+        CreateAdRequest request = new CreateAdRequest(title);
 
         return given()
                 .spec(getSpec())
                 .header("Authorization", "Bearer " + token)
-                .body(body)
+                .body(request)
                 .when()
                 .post("/api/ads");
     }
